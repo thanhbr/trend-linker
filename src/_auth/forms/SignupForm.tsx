@@ -1,15 +1,18 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { Link } from "react-router-dom"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Link } from "react-router-dom";
 
-import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { SignupValidation } from "@/lib/validation"
-import { Loader } from "@/components/shared/Loader"
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { SignupValidation } from "@/lib/validation";
+import { Loader } from "@/components/shared/Loader";
+import { createUserAccount } from "@/lib/appwrite/api";
+import { useToast } from "@/components/ui/use-toast";
 
 const SignupForm = () => {
+  const { toast } = useToast()
   const isLoading = false;
   // Define your form.
   const form = useForm<z.infer<typeof SignupValidation>>({
@@ -24,7 +27,15 @@ const SignupForm = () => {
  
   // Define a submit handler.
   async function onSubmit(values: z.infer<typeof SignupValidation>) {
-    // const newUser = await createUserAccount(values);
+    const newUser = await createUserAccount(values);
+    
+    if(!newUser) {
+      toast({
+        title: "Sign up failed. Please try again."
+      })
+    }
+
+    // const session = await signInAccount()
   }
   return (
     <Form {...form}>
